@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UJIAN ONLINE PRAKARYA KELAS XI - SMA</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome untuk Ikon Modern -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            200: '#bcccdc',
+                            300: '#9fb3c8',
+                            400: '#829ab1',
+                            500: '#627d98',
+                            600: '#486581',
+                            700: '#334e68',
+                            800: '#243b53',
+                            900: '#102a43',
+                            950: '#0a192f',
+                        },
+                        gold: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Mencegah seleksi teks dan drag pada area ujian */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        /* Animasi transisi halus */
+        .fade-in {
+            animation: fadeIn 0.35s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Scrollbar untuk panel navigasi soal */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Pengaturan Cetak Laporan Admin */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #print-area, #print-area * {
+                visibility: visible;
+            }
+            #print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+                color: black;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-gold-400 selection:text-navy-950">
+
+    <!-- =====================================================================
+         1. HALAMAN LOGIN PESERTA & AKSES ADMIN
+         ===================================================================== -->
+    <div id="view-login" class="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-8 fade-in">
+        <div class="w-full max-w-5xl bg-white rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 border border-slate-200">
+            
+            <!-- Panel Kiri: Informasi Ujian & Tata Tertib -->
+            <div class="lg:col-span-5 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-800 text-white p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
+                <!-- Dekorasi Latar -->
+                <div class="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-gold-500/10 blur-xl"></div>
+                <div class="absolute -left-12 -bottom-12 w-56 h-56 rounded-full bg-blue-500/10 blur-xl"></div>
+
+                <div class="relative z-10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/20 border border-gold-400/30 text-gold-300 text-xs font-semibold tracking-wider uppercase mb-4">
+                        <i class="fa-solid fa-shield-halved"></i> Sistem Ujian Terproteksi
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-snug text-white">
+                        UJIAN ONLINE <span class="text-gold-400">PRAKARYA</span>
+                    </h1>
+                    <p class="text-navy-200 text-sm mt-1 font-medium">Jenjang SMA • Kelas XI (Sebelas) • Semester Genap/Ganjil</p>
+
+                    <div class="mt-6 space-y-3 bg-navy-950/60 p-4 rounded-xl border border-navy-700/70 text-sm">
+                        <div class="flex justify-between items-center border-b border-navy-800 pb-2">
+                            <span class="text-navy-300"><i class="fa-solid fa-list-ol w-5 text-gold-400"></i> Jumlah Soal</span>
+                            <span class="font-semibold text-white">50 Pilihan Ganda (A–E)</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-navy-800 pb-2">
+                            <span class="text-navy-300"><i class="fa-regular fa-clock w-5 text-gold-400"></i> Durasi Ujian</span>
+                            <span class="font-semibold text-white" id="info-durasi">90 Menit</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-navy-800 pb-2">
+                            <span class="text-navy-300"><i class="fa-solid fa-award w-5 text-gold-400"></i> KKM / Nilai Maks</span>
+                            <span class="font-semibold text-white"><span id="info-kkm">75</span> / 100</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy-300"><i class="fa-solid fa-calendar-check w-5 text-gold-400"></i> Jadwal Ujian</span>
+                            <span class="font-semibold text-gold-300 text-right text-xs" id="info-jadwal">Aktif Sekarang</span>
+                        </div>
+                    </div>
+
+                    <!-- Aturan Anti-Nyontek -->
+                    <div class="mt-6">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-gold-400 mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Ketentuan Anti-Kecurangan
+                        </h3>
+                        <ul class="text-xs text-navy-200 space-y-1.5 leading-relaxed list-disc list-inside">
+                            <li>Ujian berjalan dalam mode <strong>Layar Penuh (Fullscreen)</strong>.</li>
+                            <li>Dilarang berpindah tab, membuka aplikasi lain, atau keluar fullscreen.</li>
+                            <li>Klik kanan, salin-tempel (copy-paste), dan seleksi teks dinonaktifkan.</li>
+                            <li>Batas maksimal pelanggaran adalah <strong id="info-max-pelanggaran" class="text-gold-300">3 kali</strong> sebelum ujian terkunci otomatis.</li>
+                        </ul>
+                        <p class="mt-3 text-[11px] text-navy-300/80 italic bg-navy-950/40 p-2.5 rounded-lg border border-navy-800">
+                            *Catatan Sistem: Deteksi tab dan fullscreen merupakan pengamanan berbasis browser dan tidak dapat sepenuhnya mencegah penggunaan perangkat kedua, tangkapan layar (screenshot), atau aplikasi eksternal di luar browser.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="relative z-10 mt-6 pt-4 border-t border-navy-800 flex justify-between items-center text-xs text-navy-300">
+                    <span>CBT Prakarya SMA v2.0</span>
+                    <button type="button" onclick="openAdminModal()" class="text-gold-400 hover:text-gold-300 font-semibold flex items-center gap-1.5 transition py-1 px-2 rounded hover:bg-navy-800">
+                        <i class="fa-solid fa-user-shield"></i> Portal Guru / Admin
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel Kanan: Form Login Peserta -->
+            <div class="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center bg-white">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-navy-900">Identitas Peserta Ujian</h2>
+                    <p class="text-sm text-slate-500 mt-1">Silakan lengkapi data diri Anda dengan benar sebelum memulai ujian.</p>
+                </div>
+
+                <form id="form-login" onsubmit="handleStartExam(event)" class="space-y-4">
+                    <div>
+                        <label for="input-nama" class="block text-sm font-semibold text-navy-800 mb-1">Nama Lengkap Peserta Didik <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                            <input type="text" id="input-nama" required placeholder="Contoh: Ahmad Fauzan Pratama"
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:border-navy-700 focus:ring-2 focus:ring-navy-700/20 outline-none transition text-sm font-medium">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="input-nis" class="block text-sm font-semibold text-navy-800 mb-1">NIS / NISN <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                                    <i class="fa-solid fa-id-card"></i>
+                                </span>
+                                <input type="text" id="input-nis" required placeholder="Contoh: 0071234567"
+                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:border-navy-700 focus:ring-2 focus:ring-navy-700/20 outline-none transition text-sm font-medium">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="input-kelas" class="block text-sm font-semibold text-navy-800 mb-1">Kelas <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                                    <i class="fa-solid fa-chalkboard-user"></i>
+                                </span>
+                                <select id="input-kelas" required
+                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:border-navy-700 focus:ring-2 focus:ring-navy-700/20 outline-none transition text-sm font-medium bg-white">
+                                    <option value="">-- Pilih Kelas XI --</option>
+                                    <option value="XI MIPA 1">XI MIPA 1</option>
+                                    <option value="XI MIPA 2">XI MIPA 2</option>
+                                    <option value="XI MIPA 3">XI MIPA 3</option>
+                                    <option value="XI MIPA 4">XI MIPA 4</option>
+                                    <option value="XI IPS 1">XI IPS 1</option>
+                                    <option value="XI IPS 2">XI IPS 2</option>
+                                    <option value="XI IPS 3">XI IPS 3</option>
+                                    <option value="XI IPS 4">XI IPS 4</option>
+                                    <option value="XI Merdeka A">XI Merdeka A</option>
+                                    <option value="XI Merdeka B">XI Merdeka B</option>
+                                    <option value="XI Merdeka C">XI Merdeka C</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="input-nopes" class="block text-sm font-semibold text-navy-800 mb-1">Nomor Peserta Ujian <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                                <i class="fa-solid fa-ticket"></i>
+                            </span>
+                            <input type="text" id="input-nopes" required placeholder="Contoh: 24-11-045-012"
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:border-navy-700 focus:ring-2 focus:ring-navy-700/20 outline-none transition text-sm font-medium uppercase">
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <label class="flex items-start gap-3 cursor-pointer p-3 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 transition">
+                            <input type="checkbox" id="check-integritas" required class="mt-1 w-4 h-4 text-navy-900 rounded border-slate-300 focus:ring-navy-800">
+                            <span class="text-xs text-slate-600 leading-relaxed">
+                                Saya menyatakan siap mengerjakan ujian dengan jujur, mandiri, dan mematuhi seluruh tata tertib pengawasan otomatis sistem.
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" id="btn-mulai-ujian"
+                            class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-navy-900 to-navy-800 hover:from-navy-800 hover:to-navy-700 text-white font-bold text-base shadow-lg shadow-navy-900/25 flex items-center justify-center gap-2.5 transition transform active:scale-[0.99]">
+                            <span>MULAI UJIAN SEKARANG</span>
+                            <i class="fa-solid fa-arrow-right text-gold-400"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         2. HALAMAN UJIAN AKTIF (TERPROTEKSI ANTI-CHEATING)
+         ===================================================================== -->
+    <div id="view-exam" class="hidden flex-col min-h-screen no-select bg-slate-100">
+        
+        <!-- Header Sticky Ujian -->
+        <header class="bg-navy-950 text-white shadow-lg sticky top-0 z-30 border-b-2 border-gold-500">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+                
+                <!-- Kiri: Mapel & Info Peserta -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gold-500 text-navy-950 flex items-center justify-center font-extrabold text-lg shadow">
+                        <i class="fa-solid fa-compass-drafting"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-sm sm:text-base font-bold tracking-wide text-white leading-tight">
+                            PRAKARYA <span class="text-gold-400">KELAS XI SMA</span>
+                        </h1>
+                        <p class="text-xs text-navy-200 truncate max-w-[200px] sm:max-w-md" id="exam-student-info">
+                            Peserta • Kelas • No. Ujian
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tengah/Kanan: Indikator Pelanggaran & Timer -->
+                <div class="flex items-center gap-2 sm:gap-4 ml-auto">
+                    <!-- Badge Pelanggaran -->
+                    <div id="badge-violation" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-navy-900 border border-navy-700 text-xs font-semibold">
+                        <i class="fa-solid fa-shield-virus text-gold-400"></i>
+                        <span class="hidden sm:inline text-navy-200">Pelanggaran:</span>
+                        <span id="violation-counter" class="text-white font-bold">0 / 3</span>
+                    </div>
+
+                    <!-- Timer Hitung Mundur -->
+                    <div id="timer-box" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gold-500 text-navy-950 font-extrabold text-sm sm:text-base shadow">
+                        <i class="fa-regular fa-clock"></i>
+                        <span id="timer-display" class="tracking-wider font-mono">90:00</span>
+                    </div>
+
+                    <!-- Tombol Selesai di Header (Mobile friendly) -->
+                    <button type="button" onclick="confirmFinishExam()"
+                        class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span class="hidden md:inline">SELESAI UJIAN</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Bar Pengerjaan -->
+            <div class="w-full bg-navy-900 h-1.5">
+                <div id="exam-progress-bar" class="bg-gold-400 h-1.5 transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </header>
+
+        <!-- Konten Utama Ujian -->
+        <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- Kolom Kiri (8 Kolom): Kartu Soal & Pilihan Jawaban -->
+            <div class="lg:col-span-8 bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden flex flex-col">
+                
+                <!-- Sub-Header Nomor Soal & Status -->
+                <div class="px-5 sm:px-6 py-4 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <span class="px-3 py-1 rounded-lg bg-navy-900 text-white font-bold text-sm">
+                            Soal No. <span id="current-q-number">1</span> / 50
+                        </span>
+                        <span id="q-topic-badge" class="text-xs font-medium px-2.5 py-1 rounded-lg bg-navy-100 text-navy-800 hidden sm:inline-block">
+                            Materi Prakarya
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <span id="q-status-tag" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200 text-slate-600">
+                            Belum Dijawab
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Area Teks Pertanyaan -->
+                <div class="p-5 sm:p-8 flex-grow">
+                    <div id="question-text" class="text-base sm:text-lg text-slate-800 font-medium leading-relaxed mb-6">
+                        Memuat soal...
+                    </div>
+
+                    <!-- Daftar Pilihan Jawaban A - E -->
+                    <div id="options-container" class="space-y-3">
+                        <!-- Opsi dirender melalui JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Footer Navigasi Soal (Sebelumnya, Ragu-Ragu, Selanjutnya) -->
+                <div class="px-5 sm:px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                    <button type="button" id="btn-prev" onclick="prevQuestion()"
+                        class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-sm flex items-center gap-2 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-chevron-left"></i>
+                        <span>SEBELUMNYA</span>
+                    </button>
+
+                    <button type="button" id="btn-doubt" onclick="toggleDoubt()"
+                        class="px-4 py-2.5 rounded-xl bg-amber-100 border border-amber-300 hover:bg-amber-200 text-amber-900 font-semibold text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-flag"></i>
+                        <span>RAGU-RAGU</span>
+                    </button>
+
+                    <button type="button" id="btn-next" onclick="nextQuestion()"
+                        class="px-5 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-semibold text-sm flex items-center gap-2 transition">
+                        <span>SELANJUTNYA</span>
+                        <i class="fa-solid fa-chevron-right text-gold-400"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan (4 Kolom): Navigasi Nomor 1-50 & Ringkasan -->
+            <div class="lg:col-span-4 bg-white rounded-2xl shadow-md border border-slate-200 p-5 sticky top-24">
+                <div class="flex items-center justify-between mb-3 pb-3 border-b border-slate-100">
+                    <h2 class="font-bold text-navy-900 text-sm uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-grip text-gold-500"></i> Navigasi Nomor Soal
+                    </h2>
+                    <span class="text-xs font-semibold text-slate-500" id="answered-summary">0 / 50 Terjawab</span>
+                </div>
+
+                <!-- Legenda Warna -->
+                <div class="grid grid-cols-3 gap-2 text-[11px] font-medium text-slate-600 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-3 h-3 rounded bg-emerald-600 inline-block"></span> Dijawab
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-3 h-3 rounded bg-amber-400 inline-block"></span> Ragu-ragu
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-3 h-3 rounded bg-slate-200 border border-slate-300 inline-block"></span> Kosong
+                    </div>
+                </div>
+
+                <!-- Grid Tombol Nomor 1 - 50 -->
+                <div id="question-grid" class="grid grid-cols-5 sm:grid-cols-10 lg:grid-cols-5 gap-2 max-h-[340px] overflow-y-auto pr-1">
+                    <!-- Nomor 1-50 dirender JS -->
+                </div>
+
+                <!-- Tombol Selesai Ujian Besar -->
+                <div class="mt-5 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="confirmFinishExam()"
+                        class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold text-sm shadow-md flex items-center justify-center gap-2 transition">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>SELESAI & KUMPULKAN UJIAN</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- =====================================================================
+         3. HALAMAN HASIL UJIAN PESERTA
+         ===================================================================== -->
+    <div id="view-result" class="hidden flex-grow items-center justify-center p-4 sm:p-6 fade-in">
+        <div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+            
+            <!-- Header Hasil -->
+            <div id="result-header-banner" class="bg-navy-950 text-white p-6 sm:p-8 text-center relative overflow-hidden">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gold-500 text-navy-950 text-3xl mb-3 shadow-lg">
+                    <i class="fa-solid fa-file-signature"></i>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">LAPORAN HASIL UJIAN</h1>
+                <p class="text-navy-200 text-sm mt-1">Mata Pelajaran Prakarya • Kelas XI SMA</p>
+            </div>
+
+            <!-- Konten Hasil -->
+            <div class="p-6 sm:p-8 space-y-6">
+                
+                <!-- Banner Status Terkunci Jika Pelanggaran Melebihi Batas -->
+                <div id="result-locked-alert" class="hidden p-4 rounded-xl bg-red-50 border-l-4 border-red-600 text-red-900 flex items-start gap-3">
+                    <i class="fa-solid fa-lock text-red-600 text-xl mt-0.5"></i>
+                    <div>
+                        <h3 class="font-bold text-sm uppercase">Status: Ujian Dikunci Otomatis (Perlu Pemeriksaan Guru)</h3>
+                        <p class="text-xs mt-1 leading-relaxed">
+                            Sistem menghentikan ujian Anda karena terdeteksi melakukan pelanggaran tata tertib melebihi batas maksimal yang diizinkan. Hasil ini telah ditandai untuk ditinjau oleh guru pengampu.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Kartu Nilai & Kelulusan -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-5 rounded-2xl bg-navy-50 border border-navy-100 flex flex-col items-center justify-center text-center">
+                        <span class="text-xs font-bold uppercase tracking-wider text-navy-600">Nilai Akhir Anda</span>
+                        <div class="text-5xl font-extrabold text-navy-950 my-2" id="res-score">0</div>
+                        <span class="text-xs text-slate-500">Skala Maksimal: 100 (KKM: <span id="res-kkm-val">75</span>)</span>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col items-center justify-center text-center">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Status Ketuntasan</span>
+                        <div id="res-status-badge" class="my-2 px-5 py-2 rounded-xl font-extrabold text-lg tracking-wide">
+                            -
+                        </div>
+                        <span class="text-xs text-slate-500" id="res-status-desc">Berdasarkan standar KKM sekolah</span>
+                    </div>
+                </div>
+
+                <!-- Rincian Data Peserta & Waktu -->
+                <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                    <div class="px-4 py-3 bg-slate-50 border-b border-slate-200 font-bold text-xs uppercase tracking-wider text-navy-900">
+                        Detail Identitas & Pelaksanaan
+                    </div>
+                    <div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
+                        <div class="flex justify-between border-b border-slate-100 pb-1.5">
+                            <span class="text-slate-500">Nama Peserta</span>
+                            <span class="font-semibold text-slate-900 text-right" id="res-nama">-</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-100 pb-1.5">
+                            <span class="text-slate-500">NIS / NISN</span>
+                            <span class="font-semibold text-slate-900" id="res-nis">-</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-100 pb-1.5">
+                            <span class="text-slate-500">Kelas</span>
+                            <span class="font-semibold text-slate-900" id="res-kelas">-</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-100 pb-1.5">
+                            <span class="text-slate-500">Nomor Peserta</span>
+                            <span class="font-semibold text-slate-900" id="res-nopes">-</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-100 pb-1.5">
+                            <span class="text-slate-500">Waktu Mulai</span>
+                            <span class="font-semibold text-slate-900" id="res-start">-</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-100 pb-1.5">
+                            <span class="text-slate-500">Waktu Selesai</span>
+                            <span class="font-semibold text-slate-900" id="res-end">-</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-100 pb-1.5">
+                            <span class="text-slate-500">Durasi Pengerjaan</span>
+                            <span class="font-semibold text-slate-900" id="res-duration">-</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-100 pb-1.5">
+                            <span class="text-slate-500">Catatan Pelanggaran</span>
+                            <span class="font-bold text-red-600" id="res-violations">0 Kali</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistik Jawaban -->
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200">
+                        <div class="text-2xl font-extrabold text-emerald-700" id="res-correct">0</div>
+                        <div class="text-xs font-semibold text-emerald-800 mt-0.5">Jawaban Benar</div>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200">
+                        <div class="text-2xl font-extrabold text-rose-700" id="res-wrong">0</div>
+                        <div class="text-xs font-semibold text-rose-800 mt-0.5">Jawaban Salah</div>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-slate-100 border border-slate-200">
+                        <div class="text-2xl font-extrabold text-slate-700" id="res-empty">0</div>
+                        <div class="text-xs font-semibold text-slate-600 mt-0.5">Tidak Dijawab</div>
+                    </div>
+                </div>
+
+                <!-- Catatan Kerahasiaan Kunci Jawaban -->
+                <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center gap-2.5">
+                    <i class="fa-solid fa-eye-slash text-amber-600 text-base"></i>
+                    <span>Kunci jawaban dan pembahasan soal tidak ditampilkan demi menjaga kerahasiaan ujian hingga seluruh sesi kelas selesai dan diizinkan oleh guru.</span>
+                </div>
+
+                <!-- Tombol Kembali ke Awal -->
+                <div class="pt-2 flex justify-center">
+                    <button type="button" onclick="returnToLogin()"
+                        class="px-6 py-3 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-bold text-sm shadow transition flex items-center gap-2">
+                        <i class="fa-solid fa-house"></i>
+                        <span>KEMBALI KE HALAMAN AWAL</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         4. DASHBOARD ADMIN / GURU
+         ===================================================================== -->
+    <div id="view-admin" class="hidden flex-col min-h-screen bg-slate-100 fade-in">
+        
+        <!-- Header Admin -->
+        <header class="bg-navy-950 text-white shadow-md no-print border-b-2 border-gold-500">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gold-500 text-navy-950 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-white">DASHBOARD GURU & ADMIN</h1>
+                        <p class="text-xs text-navy-200">Manajemen Ujian Online Prakarya Kelas XI SMA</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2.5">
+                    <button type="button" onclick="exportCSV()"
+                        class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold flex items-center gap-2 shadow transition">
+                        <i class="fa-solid fa-file-csv"></i>
+                        <span>Unduh CSV</span>
+                    </button>
+                    <button type="button" onclick="window.print()"
+                        class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold flex items-center gap-2 shadow transition">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Cetak Laporan</span>
+                    </button>
+                    <button type="button" onclick="logoutAdmin()"
+                        class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs sm:text-sm font-semibold flex items-center gap-2 transition">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Keluar</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Konten Dashboard Admin -->
+        <main id="print-area" class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+            
+            <!-- Judul Khusus Saat Dicetak -->
+            <div class="hidden print:block text-center border-b-2 border-black pb-4 mb-4">
+                <h1 class="text-xl font-bold uppercase">Laporan Hasil Ujian Online Prakarya Kelas XI SMA</h1>
+                <p class="text-sm">Dicetak pada: <span id="print-date"></span></p>
+            </div>
+
+            <!-- Kartu Statistik Ringkas -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">Total Peserta</p>
+                        <h3 class="text-2xl font-extrabold text-navy-950 mt-1" id="stat-total">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-navy-100 text-navy-800 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">Rata-Rata Nilai</p>
+                        <h3 class="text-2xl font-extrabold text-blue-700 mt-1" id="stat-avg">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">Peserta Tuntas</p>
+                        <h3 class="text-2xl font-extrabold text-emerald-600 mt-1" id="stat-passed">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">Terkunci / Bermasalah</p>
+                        <h3 class="text-2xl font-extrabold text-red-600 mt-1" id="stat-locked">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-red-100 text-red-700 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Pengaturan Ujian (Disembunyikan saat Print) -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 no-print">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                    <h2 class="font-bold text-navy-900 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-gold-500"></i> Pengaturan Konfigurasi Ujian
+                    </h2>
+                    <button type="button" onclick="resetDemoData()" class="text-xs text-red-600 hover:underline font-semibold">
+                        <i class="fa-solid fa-trash-can"></i> Hapus Semua Riwayat Peserta
+                    </button>
+                </div>
+
+                <form onsubmit="saveAdminSettings(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Durasi Ujian (Menit)</label>
+                        <input type="number" id="set-duration" min="5" max="240" required
+                            class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-semibold focus:border-navy-700 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Nilai KKM (0–100)</label>
+                        <input type="number" id="set-kkm" min="0" max="100" required
+                            class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-semibold focus:border-navy-700 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Maks. Pelanggaran</label>
+                        <input type="number" id="set-max-violations" min="1" max="10" required
+                            class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-semibold focus:border-navy-700 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Jadwal / Keterangan Waktu</label>
+                        <input type="text" id="set-schedule" required placeholder="Contoh: 08.00 - 09.30 WIB"
+                            class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-semibold focus:border-navy-700 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Password Admin Baru</label>
+                        <input type="text" id="set-password" required
+                            class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-semibold focus:border-navy-700 outline-none">
+                    </div>
+
+                    <div class="sm:col-span-2 lg:col-span-5 flex justify-end pt-2">
+                        <button type="submit"
+                            class="px-5 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-xs sm:text-sm font-bold shadow transition flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk text-gold-400"></i>
+                            <span>SIMPAN PENGATURAN</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabel Hasil & Riwayat Pelanggaran Peserta -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h2 class="font-bold text-navy-900 text-base">Daftar Hasil Ujian & Log Pengawasan</h2>
+                        <p class="text-xs text-slate-500">Klik tombol detail pada kolom aksi untuk melihat rincian log pelanggaran peserta.</p>
+                    </div>
+                    <div class="no-print">
+                        <input type="text" id="admin-search" onkeyup="renderAdminTable()" placeholder="Cari nama / NIS / kelas..."
+                            class="px-3.5 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm focus:border-navy-700 outline-none w-60">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-600 tracking-wider">
+                                <th class="py-3.5 px-4">No</th>
+                                <th class="py-3.5 px-4">Nama Peserta</th>
+                                <th class="py-3.5 px-4">NIS / No. Ujian</th>
+                                <th class="py-3.5 px-4">Kelas</th>
+                                <th class="py-3.5 px-4 text-center">B / S / K</th>
+                                <th class="py-3.5 px-4 text-center">Nilai</th>
+                                <th class="py-3.5 px-4 text-center">Status KKM</th>
+                                <th class="py-3.5 px-4 text-center">Pelanggaran</th>
+                                <th class="py-3.5 px-4 text-center">Kondisi Ujian</th>
+                                <th class="py-3.5 px-4 text-center no-print">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
+                            <!-- Data dirender via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- =====================================================================
+         5. MODAL-MODAL CUSTOM (PENGGANTI ALERT/CONFIRM & LOG ADMIN)
+         ===================================================================== -->
+
+    <!-- Modal Peringatan Pelanggaran Anti-Cheating -->
+    <div id="modal-warning" class="hidden fixed inset-0 z-50 bg-navy-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border-t-8 border-red-600 text-center fade-in">
+            <div class="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-3xl mx-auto mb-4 animate-bounce">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 id="warn-title" class="text-xl font-extrabold text-red-700 uppercase">PERINGATAN PELANGGARAN!</h3>
+            <p id="warn-message" class="text-sm text-slate-700 mt-2 leading-relaxed">
+                Anda terdeteksi meninggalkan halaman ujian atau keluar dari mode layar penuh.
+            </p>
+            <div class="mt-4 p-3 rounded-xl bg-red-50 border border-red-200 text-xs font-semibold text-red-800" id="warn-counter-text">
+                Pelanggaran ke-1 dari 3
+            </div>
+            <button type="button" onclick="acknowledgeWarning()"
+                class="mt-6 w-full py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-lg transition">
+                SAYA MENGERTI & KEMBALI KE UJIAN
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Selesai Ujian -->
+    <div id="modal-confirm-finish" class="hidden fixed inset-0 z-50 bg-navy-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 fade-in">
+            <div class="flex items-center gap-3 text-navy-900 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-circle-question"></i>
+                </div>
+                <h3 class="text-lg font-bold">Konfirmasi Selesai Ujian</h3>
+            </div>
+            <p class="text-sm text-slate-600 leading-relaxed" id="confirm-finish-text">
+                Apakah Anda yakin ingin mengakhiri ujian sekarang? Jawaban yang sudah dikumpulkan tidak dapat diubah kembali.
+            </p>
+            <div class="mt-6 flex items-center justify-end gap-3">
+                <button type="button" onclick="closeModal('modal-confirm-finish')"
+                    class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm transition">
+                    Batal, Cek Lagi
+                </button>
+                <button type="button" onclick="finishExam(false)"
+                    class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow transition">
+                    Ya, Kumpulkan Jawaban
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Login Admin -->
+    <div id="modal-admin-login" class="hidden fixed inset-0 z-50 bg-navy-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-navy-900 flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-gold-500"></i> Akses Guru / Admin
+                </h3>
+                <button type="button" onclick="closeModal('modal-admin-login')" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Masukkan Password Admin</label>
+                    <input type="password" id="admin-pass-input" required placeholder="Default: admin123"
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-navy-800 outline-none text-sm">
+                    <p id="admin-login-error" class="text-xs text-red-600 mt-1.5 hidden font-medium">Password salah! Silakan coba lagi.</p>
+                </div>
+                <button type="submit"
+                    class="w-full py-2.5 px-4 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-bold text-sm transition">
+                    MASUK DASHBOARD
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detail Log Pelanggaran Peserta (Admin) -->
+    <div id="modal-log-detail" class="hidden fixed inset-0 z-50 bg-navy-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 fade-in">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-200">
+                <h3 class="text-base font-bold text-navy-900" id="log-modal-title">Riwayat Pelanggaran Peserta</h3>
+                <button type="button" onclick="closeModal('modal-log-detail')" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div id="log-modal-content" class="py-4 max-h-72 overflow-y-auto space-y-2 text-xs">
+                <!-- Log dirender via JS -->
+            </div>
+            <div class="pt-3 border-t border-slate-200 flex justify-end">
+                <button type="button" onclick="closeModal('modal-log-detail')"
+                    class="px-4 py-2 rounded-xl bg-navy-900 text-white text-xs font-bold">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifikasi Umum -->
+    <div id="toast-box" class="hidden fixed bottom-5 right-5 z-50 bg-navy-900 text-white px-4 py-3 rounded-xl shadow-xl border border-gold-400/40 text-xs sm:text-sm font-medium flex items-center gap-2.5 fade-in">
+        <i class="fa-solid fa-circle-info text-gold-400"></i>
+        <span id="toast-msg">Notifikasi</span>
+    </div>
+
+    <!-- =====================================================================
+         JAVASCRIPT LOGIC (BANK SOAL 50 NOMOR, ANTI-CHEATING, CBT & ADMIN)
+         ===================================================================== -->
+    <script>
+        /**
+         * BANK SOAL PRAKARYA KELAS XI SMA (50 SOAL LENGKAP)
+         * Komposisi:
+         * - 15 Soal Mudah (C1-C2) -> No 1 - 15
+         * - 20 Soal Sedang (C3-C4) -> No 16 - 35
+         * - 15 Soal Sulit (C5-C6) -> No 36 - 50
+         * index 'correct' mengacu pada posisi jawaban benar pada array 'options' asli (0=A, 1=B, 2=C, 3=D, 4=E)
+         */
+        const BANK_SOAL = [
+            // --- 15 SOAL MUDAH (C1 - C2) ---
+            {
+                id: 1, level: "Mudah (C1)", topic: "Karakteristik Limbah",
+                q: "Bahan sisa hasil kegiatan manusia atau proses alam yang memiliki dimensi panjang dan lebar serta tidak memiliki ketebalan yang berarti disebut limbah berbentuk...",
+                options: ["Bangun ruang", "Bangun datar", "Limbah cair", "Limbah B3", "Limbah organik basah"],
+                correct: 1
+            },
+            {
+                id: 2, level: "Mudah (C1)", topic: "Bahan Limbah Bangun Datar",
+                q: "Berikut ini yang merupakan contoh limbah anorganik berbentuk bangun datar yang sering dimanfaatkan untuk kerajinan adalah...",
+                options: ["Kulit jagung dan daun kering", "Pelepah pisang dan jerami", "Kertas kardus dan plastik kemasan", "Sisik ikan dan cangkang kerang", "Potongan bambu dan tempurung kelapa"],
+                correct: 2
+            },
+            {
+                id: 3, level: "Mudah (C2)", topic: "Analisis Peluang Usaha",
+                q: "Tujuan utama dilakukannya analisis peluang usaha sebelum memulai produksi kerajinan bahan limbah adalah untuk...",
+                options: ["Meniru seluruh produk pesaing yang sudah laris", "Menemukan potensi pasar dan meminimalkan risiko kegagalan usaha", "Menghabiskan anggaran modal awal secepat mungkin", "Menghindari kewajiban membayar pajak usaha", "Membatasi jumlah konsumen agar produksi tidak kewalahan"],
+                correct: 1
+            },
+            {
+                id: 4, level: "Mudah (C1)", topic: "Analisis SWOT",
+                q: "Dalam analisis SWOT, faktor internal yang berasal dari dalam diri atau perusahaan sendiri dan menjadi keunggulan dibanding pesaing disebut...",
+                options: ["Weaknesses (Kelemahan)", "Opportunities (Peluang)", "Threats (Ancaman)", "Strengths (Kekuatan)", "Strategies (Strategi)"],
+                correct: 3
+            },
+            {
+                id: 5, level: "Mudah (C2)", topic: "Perancangan Produk",
+                q: "Prinsip ergonomis dalam perancangan produk kerajinan meliputi aspek kenyamanan, keamanan, dan...",
+                options: ["Kemewahan bahan baku", "Keluwesan (flexibility) saat digunakan", "Harga jual yang sangat mahal", "Kerumitan motif hiasan", "Ukuran kemasan yang besar"],
+                correct: 1
+            },
+            {
+                id: 6, level: "Mudah (C1)", topic: "Teknik Produksi",
+                q: "Teknik pembuatan kerajinan dari limbah kertas koran atau majalah bekas dengan cara menggulung kertas hingga berbentuk lidi panjang lalu dirangkai disebut teknik...",
+                options: ["Teknik pahat", "Teknik anyam dan linting", "Teknik cor", "Teknik las", "Teknik butsir"],
+                correct: 1
+            },
+            {
+                id: 7, level: "Mudah (C2)", topic: "Tahapan Produksi",
+                q: "Tahapan paling awal dalam proses pengolahan bahan limbah organik seperti kulit jagung atau pelepah pisang sebelum dibuat kerajinan adalah...",
+                options: ["Pengecatan dan vernis", "Pengemasan primer", "Pemilahan dan pembersihan bahan limbah", "Promosi ke media sosial", "Penghitungan harga jual"],
+                correct: 2
+            },
+            {
+                id: 8, level: "Mudah (C1)", topic: "Pengemasan Produk",
+                q: "Kemasan yang bersentuhan langsung dengan produk kerajinan untuk melindungi dari debu dan goresan disebut kemasan...",
+                options: ["Kemasan tersier", "Kemasan sekunder", "Kemasan primer", "Kemasan distribusi", "Kemasan kontainer"],
+                correct: 2
+            },
+            {
+                id: 9, level: "Mudah (C2)", topic: "Strategi Pemasaran",
+                q: "Bauran pemasaran (Marketing Mix) yang dikenal dengan istilah 4P terdiri atas...",
+                options: ["Product, Price, Place, Promotion", "People, Process, Physical, Plan", "Price, Profit, Product, Public", "Place, Plan, People, Promotion", "Product, Packaging, Price, Profit"],
+                correct: 0
+            },
+            {
+                id: 10, level: "Mudah (C1)", topic: "Biaya Produksi",
+                q: "Biaya yang jumlah totalnya tetap dan tidak berubah meskipun volume produksi kerajinan mengalami kenaikan atau penurunan disebut...",
+                options: ["Biaya variabel (Variable Cost)", "Biaya tetap (Fixed Cost)", "Biaya bahan baku langsung", "Biaya promosi harian", "Biaya pengemasan per unit"],
+                correct: 1
+            },
+            {
+                id: 11, level: "Mudah (C2)", topic: "Break Even Point",
+                q: "Kondisi di mana total pendapatan (Total Revenue) yang diperoleh perusahaan sama persis dengan total biaya (Total Cost) yang dikeluarkan sehingga usaha tidak untung maupun rugi disebut...",
+                options: ["Return on Investment", "Margin Keuntungan", "Break Even Point (Titik Impas)", "Likuiditas Usaha", "Surplus Produksi"],
+                correct: 2
+            },
+            {
+                id: 12, level: "Mudah (C1)", topic: "Alat dan Bahan",
+                q: "Alat utama yang paling tepat digunakan untuk memotong lembaran limbah kardus tebal atau akrilik tipis agar menghasilkan potongan lurus dan rapi adalah...",
+                options: ["Gunting kuku", "Cutter dan penggaris besi", "Gergaji mesin kayu", "Tang potong", "Pahat ukir"],
+                correct: 1
+            },
+            {
+                id: 13, level: "Mudah (C2)", topic: "Sistem Produksi",
+                q: "Sistem produksi kerajinan yang dikerjakan berdasarkan pesanan khusus dari konsumen dengan desain, ukuran, dan jumlah tertentu disebut sistem produksi...",
+                options: ["Mass production (produksi massal)", "Job order (berdasarkan pesanan)", "Continuous production", "Flow shop production", "Stok gudang"],
+                correct: 1
+            },
+            {
+                id: 14, level: "Mudah (C1)", topic: "Karakteristik Limbah",
+                q: "Limbah berbentuk bangun datar yang berasal dari sisa aktivitas pertanian dan mudah terurai secara alami oleh mikroorganisme adalah...",
+                options: ["Potongan seng dan kaleng", "Kain perca sintetis", "Jerami padi dan pelepah pisang", "Kaca pecah dan keramik", "Plastik mika bekas"],
+                correct: 2
+            },
+            {
+                id: 15, level: "Mudah (C2)", topic: "Evaluasi Usaha",
+                q: "Kegiatan membandingkan antara rencana usaha yang telah disusun dengan hasil nyata yang dicapai selama periode tertentu disebut...",
+                options: ["Perencanaan bahan baku", "Evaluasi usaha", "Distribusi produk", "Segmentasi pasar", "Rekrutmen tenaga kerja"],
+                correct: 1
+            },
+
+            // --- 20 SOAL SEDANG (C3 - C4) ---
+            {
+                id: 16, level: "Sedang (C3)", topic: "Perencanaan Usaha",
+                q: "Seorang siswa kelas XI ingin membuat usaha kerajinan hiasan dinding dari limbah kain perca di lingkungan sekitar konveksi. Langkah perencanaan administrasi usaha yang paling tepat dilakukan setelah menentukan jenis produk adalah...",
+                options: ["Langsung menjual produk tanpa label", "Mengurus perizinan usaha mikro (NIB) dan menyusun pembukuan sederhana", "Membeli mesin jahit industri dalam jumlah besar", "Menurunkan harga jual di bawah biaya produksi", "Menutup akses informasi bahan baku dari warga sekitar"],
+                correct: 1
+            },
+            {
+                id: 17, level: "Sedang (C4)", topic: "Karakteristik Bahan",
+                q: "Perhatikan sifat bahan berikut: (1) Serat kuat dan lentur setelah dikeringkan, (2) Memiliki gradasi warna alami kecokelatan, (3) Mudah menyerap lem kayu/PVAc, (4) Rentan berjamur jika disimpan di tempat lembap. Bahan limbah bangun datar yang memiliki karakteristik tersebut adalah...",
+                options: ["Limbah plastik kemasan kopi", "Limbah pelepah pisang kering", "Limbah pelat aluminium", "Limbah kaca lembaran", "Limbah cd/dvd bekas"],
+                correct: 1
+            },
+            {
+                id: 18, level: "Sedang (C3)", topic: "Analisis Peluang Usaha",
+                q: "Di daerah pesisir pantai banyak ditemukan limbah sisik ikan bandeng yang dibuang oleh pedagang ikan. Jika Anda menerapkan pendekatan 'demand-pull' (berbasis kebutuhan pasar), produk kerajinan bangun datar yang paling prospektif dikembangkan adalah...",
+                options: ["Tumpukan sisik ikan mentah dalam karung", "Bros, anting, dan hiasan bingkai foto bernilai estetis tinggi untuk suvenir wisata", "Alat penangkap ikan tradisional", "Bahan bakar pengganti batu bara", "Kemasan makanan berkuah panas"],
+                correct: 1
+            },
+            {
+                id: 19, level: "Sedang (C4)", topic: "Analisis SWOT",
+                q: "Sebuah kelompok wirausaha siswa memproduksi tas laptop dari limbah karung goni dan kain perca. Mereka memiliki keterampilan menjahit yang rapi, namun modal kerja terbatas. Di sisi lain, tren fesyen ramah lingkungan sedang meningkat, tetapi muncul pesaing dari produk impor murah. Strategi SO (Strengths-Opportunities) yang tepat adalah...",
+                options: ["Menghentikan produksi karena takut kalah bersaing", "Memanfaatkan keterampilan jahit rapi untuk menciptakan desain tas etnik eco-friendly guna menangkap tren pasar hijau", "Meminjam uang dengan bunga sangat tinggi tanpa perhitungan", "Mengurangi kualitas jahitan agar harga setara produk impor", "Menjual bahan baku karung goni mentah kepada pesaing"],
+                correct: 1
+            },
+            {
+                id: 20, level: "Sedang (C3)", topic: "Perancangan Produk",
+                q: "Dalam merancang lampu hias meja berbahan dasar limbah stik es krim dan kertas kalkir, aspek estetika dan keamanan harus diperhatikan. Tindakan perancangan yang tepat untuk mencegah risiko kebakaran adalah...",
+                options: ["Menggunakan lampu pijar berdaya 100 watt yang sangat panas", "Menggunakan lampu LED berdaya rendah yang tidak menghasilkan panas berlebih serta memberi jarak aman dengan bahan", "Melapisi seluruh bagian dalam dengan plastik mudah meleleh", "Menutup seluruh lubang ventilasi udara pada kap lampu", "Menggunakan kabel serabut tipis tanpa isolasi"],
+                correct: 1
+            },
+            {
+                id: 21, level: "Sedang (C4)", topic: "Pemilihan Bahan & Teknik",
+                q: "Limbah plastik kemasan detergen atau kopi instan memiliki sifat tahan air, lentur, namun sulit disambung menggunakan lem kertas biasa. Teknik penyambungan yang paling efektif dan kuat untuk membuat tas belanja dari limbah tersebut adalah...",
+                options: ["Dilem menggunakan lem kanji", "Dijahit menggunakan mesin jahit dengan benang nilon atau teknik anyam lipat", "Direkatkan menggunakan selotip kertas", "Dipanaskan langsung di atas api terbuka hingga terbakar", "Direndam dalam air garam selama seminggu"],
+                correct: 1
+            },
+            {
+                id: 22, level: "Sedang (C3)", topic: "Sistem Produksi",
+                q: "Untuk memenuhi pesanan 200 unit map seminar dari limbah kardus berlapis kain batik dalam waktu 10 hari, pembagian kerja tim yang menerapkan sistem lini produksi (assembly line) paling efisien adalah...",
+                options: ["Setiap anggota mengerjakan satu map dari awal hingga akhir sendirian", "Membagi tugas secara spesifik: tim pemotongan pola, tim pengeleman kain, tim perakitan, dan tim quality control", "Semua anggota memotong pola selama 8 hari lalu merakit di 2 hari terakhir", "Menunggu satu orang selesai bekerja baru dilanjutkan orang berikutnya", "Mengabaikan tahap pengecekan kualitas agar cepat selesai"],
+                correct: 1
+            },
+            {
+                id: 23, level: "Sedang (C4)", topic: "Tahapan Proses Produksi",
+                q: "Perhatikan urutan tahapan pembuatan kerajinan mozaik cangkang telur pada bingkai kayu berikut: (1) Pembersihan selaput dalam cangkang telur, (2) Finishing dengan vernis/clear coat, (3) Pembuatan sketsa pola pada bingkai, (4) Penempelan pecahan cangkang telur dengan lem, (5) Pengeringan dan pewarnaan cangkang. Urutan proses produksi yang sistematis adalah...",
+                options: ["(1) - (3) - (5) - (4) - (2)", "(1) - (5) - (3) - (4) - (2)", "(3) - (1) - (4) - (5) - (2)", "(5) - (1) - (3) - (2) - (4)", "(1) - (4) - (3) - (5) - (2)"],
+                correct: 1
+            },
+            {
+                id: 24, level: "Sedang (C3)", topic: "Pengemasan Produk",
+                q: "Sebuah produk kerajinan miniatur rumah adat dari limbah stik es krim akan dikirim ke luar pulau melalui jasa ekspedisi. Desain kemasan sekunder dan tersier yang paling sesuai untuk menjaga keutuhan produk adalah...",
+                options: ["Kantong plastik kresek tipis tanpa pelindung", "Boks kardus corrugated tebal yang dilengkapi bubble wrap dan stiker 'Fragile' (Barang Mudah Pecah)", "Kertas koran bekas yang diikat tali rafia", "Amplop cokelat ukuran folio", "Plastik mika lentur tanpa penyangga sudut"],
+                correct: 1
+            },
+            {
+                id: 25, level: "Sedang (C4)", topic: "Strategi Pemasaran",
+                q: "Sebuah merek kerajinan jam dinding dari piringan hitam (vinyl) bekas menargetkan segmen konsumen anak muda penyuka dekorasi kamar estetik/vintage. Strategi promosi digital yang paling efektif untuk menjangkau target pasar tersebut adalah...",
+                options: ["Memasang iklan baris di surat kabar cetak lokal", "Membuat konten video pendek (Reels/TikTok) yang menampilkan estetika ruangan dengan jam vinyl serta membuka toko di marketplace", "Membagikan brosur di area persawahan", "Mengirimkan faksimile ke kantor pemerintahan", "Menunggu pembeli datang tanpa memberi informasi produk"],
+                correct: 1
+            },
+            {
+                id: 26, level: "Sedang (C3)", topic: "Perhitungan Biaya Produksi",
+                q: "Dalam satu bulan produksi 100 unit tempat tisu dari limbah koran, dikeluarkan biaya: Bahan baku koran & lem Rp400.000, Cat & vernis Rp250.000, Tenaga kerja langsung Rp500.000, serta Biaya sewa tempat & listrik tetap Rp350.000. Total biaya produksi keseluruhan adalah...",
+                options: ["Rp1.150.000", "Rp1.350.000", "Rp1.500.000", "Rp1.650.000", "Rp1.800.000"],
+                correct: 2
+            },
+            {
+                id: 27, level: "Sedang (C3)", topic: "Perhitungan HPP",
+                q: "Berdasarkan data soal sebelumnya, jika total biaya produksi untuk menghasilkan 100 unit tempat tisu adalah Rp1.500.000, maka Harga Pokok Produksi (HPP) per unit tempat tisu tersebut adalah...",
+                options: ["Rp11.500", "Rp13.500", "Rp15.000", "Rp18.000", "Rp20.000"],
+                correct: 2
+            },
+            {
+                id: 28, level: "Sedang (C3)", topic: "Break Even Point (BEP)",
+                q: "Diketahui biaya tetap (Fixed Cost) usaha kerajinan bingkai foto limbah kardus sebesar Rp600.000. Biaya variabel per unit sebesar Rp8.000, dan harga jual per unit ditetapkan Rp20.000. Berapakah jumlah unit yang harus terjual agar mencapai titik impas (BEP Unit)?",
+                options: ["30 unit", "40 unit", "50 unit", "60 unit", "75 unit"],
+                correct: 2
+            },
+            {
+                id: 29, level: "Sedang (C3)", topic: "Break Even Point (BEP)",
+                q: "Dengan data yang sama (Fixed Cost = Rp600.000, Variable Cost = Rp8.000/unit, Harga Jual = Rp20.000/unit), berapakah nilai penjualan dalam rupiah pada saat terjadi Break Even Point (BEP Rupiah)?",
+                options: ["Rp800.000", "Rp900.000", "Rp1.000.000", "Rp1.200.000", "Rp1.500.000"],
+                correct: 2
+            },
+            {
+                id: 30, level: "Sedang (C3)", topic: "Penentuan Harga Jual",
+                q: "Jika HPP satu buah tas rajut limbah plastik adalah Rp25.000 dan wirausahawan menginginkan margin keuntungan (mark-up) sebesar 40% dari HPP, maka harga jual produk tersebut per unit adalah...",
+                options: ["Rp30.000", "Rp32.500", "Rp35.000", "Rp37.500", "Rp40.000"],
+                correct: 2
+            },
+            {
+                id: 31, level: "Sedang (C4)", topic: "Evaluasi Usaha",
+                q: "Setelah berjalan selama 3 bulan, penjualan kerajinan kipas tangan dari limbah bambu dan kain perca mengalami stagnasi. Hasil survei menunjukkan konsumen menyukai motifnya, tetapi gagang kipas dirasa terlalu berat dan kasar. Langkah evaluasi perbaikan produk yang paling tepat adalah...",
+                options: ["Menaikkan harga jual secara drastis", "Mengganti jenis bambu dengan bilah bambu yang lebih tipis, diamplas halus, dan dilapisi vernis", "Mengganti seluruh motif kain perca yang sudah disukai pelanggan", "Menghentikan kegiatan promosi di semua saluran", "Mengurangi jumlah produksi tanpa memperbaiki kualitas gagang"],
+                correct: 1
+            },
+            {
+                id: 32, level: "Sedang (C4)", topic: "Analisis Peluang Usaha",
+                q: "Mengapa limbah bangun datar seperti kulit jagung memiliki nilai tambah ekonomi yang jauh lebih tinggi setelah diolah menjadi bunga hias dibandingkan dijual dalam bentuk limbah mentah?",
+                options: ["Karena berat timbangannya bertambah berkali lipat", "Karena adanya sentuhan kreativitas, desain estetis, dan fungsi baru yang memenuhi kebutuhan dekorasi konsumen", "Karena kulit jagung menjadi bahan makanan pokok", "Karena biaya transportasinya menjadi nol", "Karena tidak memerlukan proses pengeringan dan pewarnaan"],
+                correct: 1
+            },
+            {
+                id: 33, level: "Sedang (C3)", topic: "Pengemasan & Labeling",
+                q: "Informasi wajib yang sebaiknya dicantumkan pada label kemasan produk kerajinan berbasis limbah (eco-craft) untuk meningkatkan kepercayaan konsumen dan nilai jual adalah...",
+                options: ["Daftar harga bahan baku mentah di pasar", "Nama merek (brand), logo, komposisi bahan daur ulang, petunjuk perawatan produk, dan kontak produsen", "Nomor induk kependudukan seluruh karyawan", "Keluhan produsen selama proses pembuatan", "Kunci jawaban cara membuat produk secara rinci"],
+                correct: 1
+            },
+            {
+                id: 34, level: "Sedang (C4)", topic: "Sistem Produksi",
+                q: "Dalam penerapan prinsip 3R (Reduce, Reuse, Recycle) pada produksi kerajinan bahan limbah bangun datar, tindakan yang mencerminkan prinsip 'Reduce' selama proses produksi berlangsung adalah...",
+                options: ["Membuang sisa potongan kain perca ke sungai", "Merancang pola pemotongan (layout pattern) secara presisi dan rapat agar sisa potongan limbah baru seminimal mungkin", "Membeli lem dalam kemasan saset kecil setiap hari", "Menggunakan listrik mesin secara terus-menerus saat istirahat", "Membakar sisa kardus yang tidak terpakai"],
+                correct: 1
+            },
+            {
+                id: 35, level: "Sedang (C4)", topic: "Analisis SWOT",
+                q: "Munculnya regulasi pemerintah daerah yang melarang penggunaan kantong plastik sekali pakai di pusat perbelanjaan merupakan salah satu faktor eksternal. Bagi pengrajin tas belanja dari limbah kain perca dan karung plastik, kondisi ini dikategorikan sebagai...",
+                options: ["Strength (Kekuatan)", "Weakness (Kelemahan)", "Opportunity (Peluang)", "Threat (Ancaman)", "Internal Audit"],
+                correct: 2
+            },
+
+            // --- 15 SOAL SULIT (C5 - C6) ---
+            {
+                id: 36, level: "Sulit (C5)", topic: "Evaluasi Kelayakan & BEP",
+                q: "Sebuah usaha kerajinan kap lampu dari limbah kertas daur ulang memiliki biaya tetap Rp1.200.000/bulan, biaya variabel Rp15.000/unit, dan harga jual Rp35.000/unit. Pada bulan pertama, perusahaan hanya mampu menjual 50 unit. Evaluasi kondisi keuangan usaha tersebut pada bulan pertama adalah...",
+                options: ["Perusahaan memperoleh laba bersih sebesar Rp200.000", "Perusahaan berada tepat pada titik impas (BEP)", "Perusahaan mengalami kerugian sebesar Rp200.000 karena penjualan belum mencapai BEP 60 unit", "Perusahaan mengalami kerugian sebesar Rp550.000", "Perusahaan memperoleh laba kotor sebesar Rp1.750.000"],
+                correct: 2
+            },
+            {
+                id: 37, level: "Sulit (C6)", topic: "Perancangan & Inovasi Produk",
+                q: "Anda ditugaskan merancang sebuah produk kerajinan fungsional bernilai jual tinggi dari limbah pelat kaleng bekas (bangun datar logam tipis) untuk pasar kafe modern. Rancangan produk yang paling inovatif, aman secara ergonomis, dan memiliki diferensiasi kuat adalah...",
+                options: ["Potongan kaleng tajam yang dibentuk menjadi wadah pensil tanpa pelindung tepi", "Poster tipografi retro timbul (embossed) dengan teknik lipat tepi ganda (double hem) agar tidak tajam serta dilapisi anti-karat", "Sendok makan dari potongan seng kaleng bekas", "Mainan anak balita dengan sudut runcing", "Alas gelas tanpa lapisan pelindung sehingga mudah berkarat saat terkena air"],
+                correct: 1
+            },
+            {
+                id: 38, level: "Sulit (C5)", topic: "Strategi Penetapan Harga",
+                q: "Sebuah produk kerajinan lukisan siluet dari limbah serbuk gergaji dan tripleks bekas memiliki HPP Rp45.000. Di pasaran, produk sejenis dijual seharga Rp75.000 hingga Rp90.000. Jika Anda menerapkan strategi 'Value-Based Pricing' dengan menambahkan kemasan boks kayu eksklusif dan sertifikat keaslian karya (biaya tambahan Rp10.000), keputusan penetapan harga paling rasional adalah...",
+                options: ["Menjual di harga Rp40.000 agar cepat laku meski merugi", "Menjual di harga Rp55.000 tanpa mengambil keuntungan sedikit pun", "Menjual di harga Rp95.000 dengan menonjolkan nilai eksklusivitas karya seni ramah lingkungan dan kemasan premium", "Menjual di harga Rp250.000 tanpa ada perbedaan kualitas dengan pesaing", "Memberikan produk secara gratis selamanya"],
+                correct: 2
+            },
+            {
+                id: 39, level: "Sulit (C6)", topic: "Strategi Pengembangan Usaha",
+                q: "Usaha kerajinan tas laptop dari limbah banner (spanduk bekas) milik siswa SMA mulai kewalahan memenuhi permintaan yang melonjak dari 30 unit menjadi 300 unit per bulan, sementara kualitas jahitan mulai menurun akibat kelelahan kerja. Rencana pengembangan sistem produksi yang paling berkelanjutan adalah...",
+                options: ["Menolak seluruh pesanan di atas 30 unit secara permanen", "Menurunkan standar quality control agar semua barang lolos kirim", "Menerapkan kemitraan sub-kontrak dengan penjahit rumahan sekitar dengan standar SOP terukur, sementara tim inti fokus pada desain, pemotongan pola, dan quality control akhir", "Memaksa anggota tim bekerja lembur tanpa istirahat setiap hari", "Mengganti bahan banner dengan kertas karton agar mudah dilem"],
+                correct: 2
+            },
+            {
+                id: 40, level: "Sulit (C5)", topic: "Analisis Matriks SWOT",
+                q: "Perhatikan kasus berikut: (1) Kelemahan (W): Kapasitas penyimpanan bahan baku limbah kardus terbatas dan mudah rusak jika terkena hujan. (2) Ancaman (T): Musim hujan berkepanjangan meningkatkan kelembapan udara dan merusak stok bahan baku. Rumusan strategi WT (Weaknesses-Threats) yang paling tepat untuk meminimalkan risiko tersebut adalah...",
+                options: ["Membeli limbah kardus dalam jumlah sangat besar dan menumpuknya di halaman terbuka", "Menerapkan sistem pengadaan bahan baku Just-In-Time (sesuai jadwal produksi mingguan) serta melapisi rak penyimpanan dengan palet plastik dan terpal kedap air", "Menghentikan usaha setiap kali musim hujan tiba", "Menaikkan harga jual produk saat musim hujan untuk menutupi bahan yang rusak", "Menggunakan kardus yang sudah berjamur untuk menekan biaya"],
+                correct: 1
+            },
+            {
+                id: 41, level: "Sulit (C5)", topic: "Evaluasi Efisiensi Biaya",
+                q: "Dalam evaluasi produksi 200 unit wadah serbaguna dari limbah koran, ditemukan bahwa biaya lem PVAc membengkak 35% dari anggaran awal karena pekerja mengoleskan lem terlalu tebal sehingga waktu pengeringan juga menjadi lebih lama. Solusi manajerial dan teknis yang paling tepat adalah...",
+                options: ["Mengganti lem dengan air biasa", "Melakukan standardisasi takaran lem dengan menggunakan kuas aplikator berukuran seragam dan mengencerkan lem sesuai rasio kekentalan optimal", "Memotong gaji pekerja sebesar 35%", "Mengurangi jumlah lilitan koran hingga wadah menjadi lembek", "Menaikkan harga jual produk sebesar 50%"],
+                correct: 1
+            },
+            {
+                id: 42, level: "Sulit (C6)", topic: "Perancangan Kemasan Berkelanjutan",
+                q: "Konsumen produk kerajinan berbasis limbah (eco-friendly) sering kali mengkritik produsen yang menggunakan plastik bubble wrap sekali pakai dalam jumlah banyak sebagai kemasan. Rancangan inovasi kemasan pelindung yang selaras dengan nilai keberlanjutan lingkungan (zero-waste packaging) adalah...",
+                options: ["Menggunakan styrofoam lembaran tebal", "Menggunakan kertas kraft berpotongan sarang lebah (honeycomb paper wrap) dan cacahan kertas koran bekas sebagai bantalan peredam benturan", "Mengirim produk tanpa kemasan sama sekali", "Menggunakan lapisan plastik hitam berlapis-lapis", "Menggunakan kaleng cat bekas yang masih berbau kimia"],
+                correct: 1
+            },
+            {
+                id: 43, level: "Sulit (C5)", topic: "Analisis BEP Multi-Kondisi",
+                q: "Sebuah usaha kerajinan memiliki Fixed Cost Rp1.000.000, Variable Cost Rp10.000/unit, dan Harga Jual Rp30.000/unit (BEP awal = 50 unit). Jika pemilik usaha memutuskan menyewa kios baru yang menaikkan Fixed Cost menjadi Rp1.500.000, sementara Variable Cost dan Harga Jual tetap, bagaimana dampak perubahan tersebut terhadap titik impas usaha?",
+                options: ["BEP turun menjadi 25 unit sehingga usaha lebih cepat untung", "BEP tetap pada 50 unit karena harga jual tidak berubah", "BEP naik menjadi 75 unit, sehingga perusahaan harus menjual minimal 25 unit lebih banyak dari sebelumnya untuk mencapai titik impas", "BEP naik menjadi 100 unit", "Perusahaan otomatis bangkrut"],
+                correct: 2
+            },
+            {
+                id: 44, level: "Sulit (C6)", topic: "Strategi Pemasaran Terpadu",
+                q: "Produk kerajinan kaligrafi dan lukisan tekstur dari limbah pelepah pisang memiliki keunikan tinggi, tetapi sulit dipahami nilai seninya jika hanya dilihat lewat foto statis biasa. Rancangan kampanye pemasaran berbasis storytelling yang paling efektif untuk meningkatkan konversi penjualan adalah...",
+                options: ["Hanya mengunggah foto produk dengan keterangan harga saja", "Membuat konten video di balik layar (behind the scenes) yang memperlihatkan proses transformasi limbah pelepah pisang menjadi karya seni bernilai tinggi beserta narasi pemberdayaan lingkungan", "Menyebarkan pesan spam ke ribuan nomor acak", "Menjelek-jelekkan produk lukisan dari kanvas konvensional", "Menyembunyikan fakta bahwa produk tersebut terbuat dari bahan limbah"],
+                correct: 1
+            },
+            {
+                id: 45, level: "Sulit (C5)", topic: "Pengendalian Kualitas (QC)",
+                q: "Pada tahap Quality Control (QC) akhir untuk produk tatakan gelas (coaster) dari limbah kayu palet dan resin, ditemukan 10% produk mengalami gelembung udara mikro pada permukaan resin dan ketebalan tidak merata. Tindakan korektif yang paling tepat untuk menjaga reputasi merek adalah...",
+                options: ["Tetap menjual produk cacat tersebut dengan harga penuh bersama produk normal", "Memisahkan produk cacat sebagai produk 'Grade B / Reject' untuk dijual dengan harga diskon khusus (clearance sale) secara transparan, serta memperbaiki proses degassing/pemanasan resin pada batch berikutnya", "Membuang seluruh 100% hasil produksi ke tempat sampah", "Menutupi gelembung udara dengan stiker harga", "Menyalahkan konsumen jika produk cepat rusak"],
+                correct: 1
+            },
+            {
+                id: 46, level: "Sulit (C6)", topic: "Diversifikasi Produk",
+                q: "Sebuah kelompok usaha siswa sukses menjual pembatas buku dari limbah daun kering (skeleton leaf) yang dilaminasi. Namun, pasar pembatas buku dinilai mulai jenuh. Rencana diversifikasi horizontal berbasis bahan baku dan teknik yang sama untuk memperluas pangsa pasar adalah...",
+                options: ["Beralih memproduksi minuman herbal kemasan botol", "Mengembangkan lini produk baru berupa lampu tidur akrilik berhias daun kering, undangan pernikahan eksklusif, dan hiasan dinding resin", "Menjual daun kering mentah tanpa diolah", "Membuka jasa servis kendaraan bermotor", "Membuat pembatas buku dengan ukuran 2 meter"],
+                correct: 1
+            },
+            {
+                id: 47, level: "Sulit (C5)", topic: "Evaluasi Kinerja Keuangan",
+                q: "Laporan keuangan triwulan usaha kerajinan menunjukkan omzet penjualan meningkat 40%, tetapi laba bersih justru turun 15%. Setelah diaudit, penyebab utamanya adalah tingginya biaya ongkos kirim gratis (free shipping) yang ditanggung penjual dan banyaknya retur barang rusak akibat kemasan kurang kokoh. Keputusan strategis yang paling tepat adalah...",
+                options: ["Menghentikan penjualan online sepenuhnya", "Menetapkan syarat minimum pembelian untuk promo gratis ongkir serta meredesain struktur kemasan agar lebih tahan banting dan efisien secara dimensi volumetrik", "Menaikkan harga produk hingga 3 kali lipat", "Mengurangi kualitas bahan baku utama kerajinan", "Menghapus fitur layanan pelanggan"],
+                correct: 1
+            },
+            {
+                id: 48, level: "Sulit (C6)", topic: "Perencanaan Produksi Massal",
+                q: "Dalam merancang cetakan (mal/jig) untuk memotong limbah kulit sintetis sisa pabrik sepatu menjadi gantungan kunci berbentuk geometris, tujuan utama penggunaan alat bantu mal berbahan pelat logam dibandingkan menggunting manual mengikuti garis pensil adalah...",
+                options: ["Agar waktu pengerjaan menjadi lebih santai dan lama", "Menjamin presisi ukuran, konsistensi bentuk antar-unit, mempercepat waktu siklus potong, dan meminimalkan kesalahan manusia (human error)", "Menambah biaya pembelian pensil setiap hari", "Membuat bentuk gantungan kunci berbeda-beda setiap potongannya", "Mengurangi ketajaman pisau potong"],
+                correct: 1
+            },
+            {
+                id: 49, level: "Sulit (C5)", topic: "Etika Bisnis & HAKI",
+                q: "Seorang pengrajin menemukan bahwa motif anyaman khas yang ia rancang sendiri dari limbah plastik kemasan telah ditiru persis oleh perusahaan besar tanpa izin. Langkah perlindungan hukum jangka panjang yang seharusnya dilakukan wirausahawan kreatif terhadap orisinalitas desain produknya adalah...",
+                options: ["Mengancam pesaing melalui media sosial tanpa bukti hukum", "Mendaftarkan desain produk ke Direktorat Jenderal Kekayaan Intelektual (DJKI) untuk memperoleh perlindungan Hak Desain Industri dan Merek Dagang", "Menutup usahanya dan berhenti berkarya", "Mengganti nama produk setiap minggu", "Meniru balik desain milik orang lain"],
+                correct: 1
+            },
+            {
+                id: 50, level: "Sulit (C6)", topic: "Sintesis Wirausaha Berkelanjutan",
+                q: "Untuk membangun model bisnis kerajinan bahan limbah bangun datar yang berkelanjutan (sustainable business model) di lingkungan sekolah dan masyarakat, integrasi ekosistem terbaik yang dapat dirancang adalah...",
+                options: ["Mengimpor limbah plastik dari luar negeri dengan biaya mahal", "Membangun bank sampah mitra sebagai pemasok bahan baku terpilah, memberdayakan komunitas lokal dalam produksi berstandar, dan memasarkan produk melalui platform omnichannel dengan narasi dampak sosial-lingkungan", "Mengandalkan bantuan dana hibah sekolah tanpa target penjualan", "Memproduksi barang hanya saat ada pameran tahunan", "Menjual produk hanya kepada keluarga terdekat"],
+                correct: 1
+            }
+        ];
+
+        // =====================================================================
+        // STATE MANAGEMENT & KONFIGURASI LOCALSTORAGE
+        // =====================================================================
+        const STORAGE_KEYS = {
+            SETTINGS: 'prakarya_xi_settings_v1',
+            RESULTS: 'prakarya_xi_results_v1',
+            ACTIVE_SESSION: 'prakarya_xi_active_session_v1'
+        };
+
+        // Pengaturan Default Ujian
+        let appSettings = {
+            durationMinutes: 90,
+            kkm: 75,
+            maxViolations: 3,
+            scheduleText: 'Aktif • Sesi Ujian Sekolah',
+            adminPassword: 'admin123'
+        };
+
+        // State Sesi Ujian Aktif
+        let examState = {
+            isActive: false,
+            student: null,
+            questions: [], // 50 soal yang sudah diacak soal & opsinya
+            currentIndex: 0,
+            answers: {},   // { qIndex: selectedOptionIndex (0-4) }
+            doubts: {},    // { qIndex: true/false }
+            violations: 0,
+            violationLogs: [],
+            startTime: null,
+            endTime: null,
+            remainingSeconds: 5400,
+            timerInterval: null,
+            isWarningOpen: false
+        };
+
+        // =====================================================================
+        // INISIALISASI APLIKASI SAAT HALAMAN DIMUAT
+        // =====================================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            updateLoginInfoUI();
+            setupAntiCheatingListeners();
+            checkExistingSession();
+        });
+
+        function loadSettings() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+                if (saved) {
+                    appSettings = { ...appSettings, ...JSON.parse(saved) };
+                }
+            } catch (e) {
+                console.error("Gagal memuat pengaturan:", e);
+            }
+        }
+
+        function saveSettingsToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(appSettings));
+            } catch (e) {
+                console.error("Gagal menyimpan pengaturan:", e);
+            }
+        }
+
+        function updateLoginInfoUI() {
+            document.getElementById('info-durasi').textContent = `${appSettings.durationMinutes} Menit`;
+            document.getElementById('info-kkm').textContent = appSettings.kkm;
+            document.getElementById('info-jadwal').textContent = appSettings.scheduleText;
+            document.getElementById('info-max-pelanggaran').textContent = `${appSettings.maxViolations} kali`;
+        }
+
+        // =====================================================================
+        // ALGORITMA PENGACAKAN (FISHER-YATES SHUFFLE)
+        // =====================================================================
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        /**
+         * Mengacak urutan 50 soal dan mengacak pilihan jawaban A-E
+         * sambil menjaga indeks jawaban benar tetap akurat.
+         */
+        function generateRandomizedExamQuestions() {
+            // 1. Acak urutan 50 soal tanpa menghilangkan/menggandakan
+            const shuffledQuestions = shuffleArray(BANK_SOAL);
+
+            // 2. Acak opsi jawaban untuk tiap soal
+            return shuffledQuestions.map((item, idx) => {
+                const optionObjects = item.options.map((text, optIdx) => ({
+                    text: text,
+                    isCorrect: optIdx === item.correct
+                }));
+
+                const shuffledOptions = shuffleArray(optionObjects);
+                const newCorrectIndex = shuffledOptions.findIndex(o => o.isCorrect);
+
+                return {
+                    examNumber: idx + 1,
+                    originalId: item.id,
+                    level: item.level,
+                    topic: item.topic,
+                    q: item.q,
+                    options: shuffledOptions.map(o => o.text),
+                    correctIndex: newCorrectIndex
+                };
+            });
+        }
+
+        // =====================================================================
+        // MULAI UJIAN & PEMULIHAN SESI
+        // =====================================================================
+        function handleStartExam(e) {
+            e.preventDefault();
+
+            const nama = document.getElementById('input-nama').value.trim();
+            const nis = document.getElementById('input-nis').value.trim();
+            const kelas = document.getElementById('input-kelas').value;
+            const nopes = document.getElementById('input-nopes').value.trim().toUpperCase();
+
+            if (!nama || !nis || !kelas || !nopes) {
+                showToast("Harap lengkapi seluruh identitas peserta!");
+                return;
+            }
+
+            // Minta izin mode fullscreen
+            requestFullscreenMode();
+
+            // Siapkan state ujian baru
+            const now = new Date();
+            examState = {
+                isActive: true,
+                student: { nama, nis, kelas, nopes },
+                questions: generateRandomizedExamQuestions(),
+                currentIndex: 0,
+                answers: {},
+                doubts: {},
+                violations: 0,
+                violationLogs: [],
+                startTime: now.toISOString(),
+                endTime: null,
+                remainingSeconds: appSettings.durationMinutes * 60,
+                timerInterval: null,
+                isWarningOpen: false
+            };
+
+            saveActiveSession();
+            enterExamView();
+        }
+
+        function checkExistingSession() {
+            try {
+                const savedSession = localStorage.getItem(STORAGE_KEYS.ACTIVE_SESSION);
+                if (savedSession) {
+                    const parsed = JSON.parse(savedSession);
+                    if (parsed && parsed.isActive && parsed.questions && parsed.questions.length === 50) {
+                        examState = parsed;
+                        examState.isWarningOpen = false;
+                        // Catat refresh halaman sebagai potensi pelanggaran jika sedang ujian
+                        enterExamView();
+                        recordViolation("Halaman ujian dimuat ulang (Refresh) saat sesi berlangsung.");
+                    }
+                }
+            } catch (e) {
+                console.error("Gagal memulihkan sesi:", e);
+            }
+        }
+
+        function saveActiveSession() {
+            if (!examState.isActive) return;
+            try {
+                const toSave = { ...examState, timerInterval: null };
+                localStorage.setItem(STORAGE_KEYS.ACTIVE_SESSION, JSON.stringify(toSave));
+            } catch (e) {
+                console.error("Gagal menyimpan progres ujian:", e);
+            }
+        }
+
+        function enterExamView() {
+            switchView('view-exam');
+
+            // Tampilkan identitas peserta di header
+            const s = examState.student;
+            document.getElementById('exam-student-info').textContent = `${s.nama} • ${s.kelas} • No: ${s.nopes}`;
+            updateViolationUI();
+
+            // Render grid nomor & soal aktif
+            renderQuestionGrid();
+            renderCurrentQuestion();
+            updateProgressUI();
+
+            // Mulai Timer
+            startExamTimer();
+        }
+
+        // =====================================================================
+        // TIMER HITUNG MUNDUR
+        // =====================================================================
+        function startExamTimer() {
+            if (examState.timerInterval) clearInterval(examState.timerInterval);
+
+            updateTimerDisplay();
+            examState.timerInterval = setInterval(() => {
+                if (!examState.isActive) {
+                    clearInterval(examState.timerInterval);
+                    return;
+                }
+
+                examState.remainingSeconds--;
+                updateTimerDisplay();
+
+                // Simpan progres tiap 5 detik
+                if (examState.remainingSeconds % 5 === 0) {
+                    saveActiveSession();
+                }
+
+                if (examState.remainingSeconds <= 0) {
+                    clearInterval(examState.timerInterval);
+                    showToast("Waktu ujian telah habis! Jawaban dikumpulkan otomatis.");
+                    finishExam(false, true);
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const totalSec = Math.max(0, examState.remainingSeconds);
+            const mins = Math.floor(totalSec / 60);
+            const secs = totalSec % 60;
+            const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+            const displayEl = document.getElementById('timer-display');
+            const boxEl = document.getElementById('timer-box');
+            displayEl.textContent = formatted;
+
+            // Peringatan warna merah jika waktu kurang dari 5 menit
+            if (totalSec <= 300) {
+                boxEl.classList.remove('bg-gold-500', 'text-navy-950');
+                boxEl.classList.add('bg-red-600', 'text-white', 'animate-pulse');
+            } else {
+                boxEl.classList.add('bg-gold-500', 'text-navy-950');
+                boxEl.classList.remove('bg-red-600', 'text-white', 'animate-pulse');
+            }
+        }
+
+        // =====================================================================
+        // RENDER SOAL & NAVIGASI UJIAN
+        // =====================================================================
+        function renderCurrentQuestion() {
+            const idx = examState.currentIndex;
+            const qObj = examState.questions[idx];
+            const selectedOpt = examState.answers[idx];
+            const isDoubt = !!examState.doubts[idx];
+
+            document.getElementById('current-q-number').textContent = idx + 1;
+            document.getElementById('q-topic-badge').textContent = `${qObj.topic}`;
+            document.getElementById('question-text').textContent = qObj.q;
+
+            // Status tag soal saat ini
+            const statusTag = document.getElementById('q-status-tag');
+            if (isDoubt) {
+                statusTag.textContent = "Ragu-Ragu";
+                statusTag.className = "text-xs font-semibold px-3 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-300";
+            } else if (selectedOpt !== undefined) {
+                statusTag.textContent = "Sudah Dijawab";
+                statusTag.className = "text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300";
+            } else {
+                statusTag.textContent = "Belum Dijawab";
+                statusTag.className = "text-xs font-semibold px-3 py-1 rounded-full bg-slate-200 text-slate-600";
+            }
+
+            // Render Opsi Jawaban A - E
+            const letters = ['A', 'B', 'C', 'D', 'E'];
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            qObj.options.forEach((optText, optIdx) => {
+                const isSelected = selectedOpt === optIdx;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => selectAnswer(optIdx);
+                btn.className = `w-full text-left p-3.5 sm:p-4 rounded-xl border-2 transition flex items-start gap-3.5 group ${
+                    isSelected
+                        ? 'border-navy-800 bg-navy-50/90 shadow-sm'
+                        : 'border-slate-200 bg-white hover:border-navy-300 hover:bg-slate-50'
+                }`;
+
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center font-bold text-sm transition ${
+                        isSelected
+                            ? 'bg-navy-900 text-gold-400'
+                            : 'bg-slate-100 text-slate-700 group-hover:bg-navy-100 group-hover:text-navy-900'
+                    }">
+                        ${letters[optIdx]}
+                    </span>
+                    <span class="text-sm sm:text-base text-slate-800 leading-relaxed pt-0.5 font-medium">
+                        ${optText}
+                    </span>
+                `;
+                container.appendChild(btn);
+            });
+
+            // Update tombol Sebelumnya & Selanjutnya
+            document.getElementById('btn-prev').disabled = idx === 0;
+            const btnNext = document.getElementById('btn-next');
+            if (idx === examState.questions.length - 1) {
+                btnNext.innerHTML = `<span>SELESAI</span> <i class="fa-solid fa-check text-gold-400"></i>`;
+                btnNext.onclick = () => confirmFinishExam();
+            } else {
+                btnNext.innerHTML = `<span>SELANJUTNYA</span> <i class="fa-solid fa-chevron-right text-gold-400"></i>`;
+                btnNext.onclick = () => nextQuestion();
+            }
+
+            // Update styling tombol ragu-ragu
+            const btnDoubt = document.getElementById('btn-doubt');
+            if (isDoubt) {
+                btnDoubt.className = "px-4 py-2.5 rounded-xl bg-amber-500 text-white font-bold text-sm flex items-center gap-2 shadow transition";
+            } else {
+                btnDoubt.className = "px-4 py-2.5 rounded-xl bg-amber-100 border border-amber-300 hover:bg-amber-200 text-amber-900 font-semibold text-sm flex items-center gap-2 transition";
+            }
+
+            renderQuestionGrid();
+        }
+
+        function selectAnswer(optIdx) {
+            examState.answers[examState.currentIndex] = optIdx;
+            saveActiveSession();
+            renderCurrentQuestion();
+            updateProgressUI();
+        }
+
+        function toggleDoubt() {
+            const idx = examState.currentIndex;
+            examState.doubts[idx] = !examState.doubts[idx];
+            saveActiveSession();
+            renderCurrentQuestion();
+        }
+
+        function prevQuestion() {
+            if (examState.currentIndex > 0) {
+                examState.currentIndex--;
+                renderCurrentQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (examState.currentIndex < examState.questions.length - 1) {
+                examState.currentIndex++;
+                renderCurrentQuestion();
+            }
+        }
+
+        function jumpToQuestion(idx) {
+            examState.currentIndex = idx;
+            renderCurrentQuestion();
+        }
+
+        function renderQuestionGrid() {
+            const grid = document.getElementById('question-grid');
+            grid.innerHTML = '';
+
+            examState.questions.forEach((_, idx) => {
+                const isCurrent = idx === examState.currentIndex;
+                const isAnswered = examState.answers[idx] !== undefined;
+                const isDoubt = !!examState.doubts[idx];
+
+                let colorClass = 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200';
+                if (isDoubt) {
+                    colorClass = 'bg-amber-400 text-navy-950 border-amber-500 font-bold';
+                } else if (isAnswered) {
+                    colorClass = 'bg-emerald-600 text-white border-emerald-700 font-bold';
+                }
+
+                const ringClass = isCurrent ? 'ring-2 ring-offset-1 ring-navy-900 scale-105' : '';
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = idx + 1;
+                btn.onclick = () => jumpToQuestion(idx);
+                btn.className = `h-9 rounded-lg border text-xs transition flex items-center justify-center ${colorClass} ${ringClass}`;
+                grid.appendChild(btn);
+            });
+        }
+
+        function updateProgressUI() {
+            const total = examState.questions.length;
+            const answeredCount = Object.keys(examState.answers).length;
+            const percentage = Math.round((answeredCount / total) * 100);
+
+            document.getElementById('exam-progress-bar').style.width = `${percentage}%`;
+            document.getElementById('answered-summary').textContent = `${answeredCount} / ${total} Terjawab`;
+        }
+
+        // =====================================================================
+        // SISTEM ANTI-NYONTEK (FULLSCREEN, TAB SWITCH, KONTEN)
+        // =====================================================================
+        function requestFullscreenMode() {
+            const elem = document.documentElement;
+            try {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(() => {});
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+            } catch (e) {
+                console.warn("Fullscreen tidak didukung/ditolak browser:", e);
+            }
+        }
+
+        function exitFullscreenMode() {
+            try {
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().catch(() => {});
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function setupAntiCheatingListeners() {
+            // 1. Deteksi perpindahan tab atau minimize browser (Visibility API)
+            document.addEventListener('visibilitychange', () => {
+                if (examState.isActive && document.hidden) {
+                    recordViolation("Berpindah tab browser atau meminimalkan jendela aplikasi.");
+                }
+            });
+
+            // 2. Deteksi jendela kehilangan fokus (membuka aplikasi lain / split screen)
+            window.addEventListener('blur', () => {
+                if (examState.isActive && !examState.isWarningOpen) {
+                    recordViolation("Jendela ujian kehilangan fokus (membuka aplikasi/jendela lain).");
+                }
+            });
+
+            // 3. Deteksi keluar dari mode Fullscreen
+            const handleFullscreenChange = () => {
+                if (examState.isActive) {
+                    const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+                    if (!isFull) {
+                        recordViolation("Keluar dari mode layar penuh (Fullscreen).");
+                    }
+                }
+            };
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+            // 4. Nonaktifkan Klik Kanan pada area ujian
+            document.addEventListener('contextmenu', (e) => {
+                if (examState.isActive) {
+                    e.preventDefault();
+                    showToast("Klik kanan dinonaktifkan selama ujian berlangsung!");
+                }
+            });
+
+            // 5. Nonaktifkan Copy, Cut, Paste
+            ['copy', 'cut', 'paste'].forEach(evt => {
+                document.addEventListener(evt, (e) => {
+                    if (examState.isActive) {
+                        e.preventDefault();
+                        showToast("Fitur salin/tempel dinonaktifkan selama ujian!");
+                    }
+                });
+            });
+
+            // 6. Blokir Shortcut Keyboard Umum (Ctrl+C, Ctrl+V, Ctrl+U, Ctrl+S, F12, PrintScreen, Alt+Tab hint)
+            document.addEventListener('keydown', (e) => {
+                if (!examState.isActive) return;
+
+                // Blokir F12 atau Ctrl+Shift+I/J/C (Inspect Element)
+                if (
+                    e.key === 'F12' ||
+                    (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) ||
+                    (e.ctrlKey && ['c', 'C', 'v', 'V', 'x', 'X', 'u', 'U', 's', 'S', 'p', 'P', 'a', 'A'].includes(e.key))
+                ) {
+                    e.preventDefault();
+                    showToast("Kombinasi tombol keyboard diblokir oleh sistem keamanan!");
+                }
+            });
+        }
+
+        // Debounce pelanggaran agar event blur + visibilitychange bersamaan tidak terhitung ganda
+        let lastViolationTimestamp = 0;
+
+        function recordViolation(reason) {
+            if (!examState.isActive) return;
+
+            const nowMs = Date.now();
+            if (nowMs - lastViolationTimestamp < 1500) {
+                return; // Abaikan duplikasi dalam jeda 1.5 detik
+            }
+            lastViolationTimestamp = nowMs;
+
+            examState.violations++;
+            const timeStr = new Date().toLocaleTimeString('id-ID');
+            examState.violationLogs.push({
+                count: examState.violations,
+                time: timeStr,
+                reason: reason
+            });
+
+            updateViolationUI();
+            saveActiveSession();
+
+            const maxV = appSettings.maxViolations;
+
+            // Cek apakah pelanggaran melebihi batas maksimal (Pelanggaran ke-4 jika max=3)
+            if (examState.violations > maxV) {
+                examState.isWarningOpen = false;
+                closeModal('modal-warning');
+                finishExam(true); // Kunci otomatis ujian!
+                return;
+            }
+
+            // Tampilkan Peringatan 1, 2, atau 3
+            examState.isWarningOpen = true;
+            document.getElementById('warn-title').textContent = `PERINGATAN ${examState.violations}!`;
+            document.getElementById('warn-message').textContent =
+                `Sistem mendeteksi aktivitas mencurigakan: "${reason}". Harap tetap berada di layar penuh halaman ujian!`;
+
+            if (examState.violations === maxV) {
+                document.getElementById('warn-counter-text').textContent =
+                    `Pelanggaran ke-${examState.violations} dari ${maxV} (PERINGATAN TERAKHIR! Pelanggaran berikutnya akan mengunci ujian secara otomatis).`;
+            } else {
+                document.getElementById('warn-counter-text').textContent =
+                    `Pelanggaran ke-${examState.violations} dari maksimal ${maxV} kali.`;
+            }
+
+            document.getElementById('modal-warning').classList.remove('hidden');
+        }
+
+        function acknowledgeWarning() {
+            examState.isWarningOpen = false;
+            closeModal('modal-warning');
+            requestFullscreenMode();
+        }
+
+        function updateViolationUI() {
+            const el = document.getElementById('violation-counter');
+            const badge = document.getElementById('badge-violation');
+            el.textContent = `${examState.violations} / ${appSettings.maxViolations}`;
+
+            if (examState.violations > 0) {
+                badge.classList.remove('bg-navy-900', 'border-navy-700');
+                badge.classList.add('bg-red-900/90', 'border-red-500');
+            }
+        }
+
+        // =====================================================================
+        // PENYELESAIAN UJIAN & PERHITUNGAN NILAI
+        // =====================================================================
+        function confirmFinishExam() {
+            const answeredCount = Object.keys(examState.answers).length;
+            const total = examState.questions.length;
+            const unanswered = total - answeredCount;
+
+            const msgEl = document.getElementById('confirm-finish-text');
+            if (unanswered > 0) {
+                msgEl.innerHTML = `Anda baru menjawab <strong>${answeredCount}</strong> dari <strong>${total}</strong> soal (masih ada <span class="text-red-600 font-bold">${unanswered} soal kosong</span>). Apakah Anda yakin ingin mengakhiri ujian sekarang?`;
+            } else {
+                msgEl.innerHTML = `Seluruh <strong>${total} soal</strong> telah Anda jawab. Apakah Anda yakin ingin mengumpulkan ujian sekarang? Jawaban tidak dapat diubah setelah dikumpulkan.`;
+            }
+
+            document.getElementById('modal-confirm-finish').classList.remove('hidden');
+        }
+
+        function finishExam(isLockedByViolation = false, isTimeUp = false) {
+            if (!examState.isActive) return;
+
+            examState.isActive = false;
+            clearInterval(examState.timerInterval);
+            closeModal('modal-confirm-finish');
+            closeModal('modal-warning');
+            exitFullscreenMode();
+
+            const endDate = new Date();
+            const startDate = new Date(examState.startTime);
+            examState.endTime = endDate.toISOString();
+
+            // Hitung durasi pengerjaan
+            const diffSec = Math.max(1, Math.floor((endDate - startDate) / 1000));
+            const durMins = Math.floor(diffSec / 60);
+            const durSecs = diffSec % 60;
+            const durationFormatted = `${durMins} menit ${durSecs} detik`;
+
+            // Hitung skor (Setiap soal benar = 2 poin, salah = 0, kosong = 0)
+            let correctCount = 0;
+            let wrongCount = 0;
+            let emptyCount = 0;
+
+            examState.questions.forEach((qObj, idx) => {
+                const userAns = examState.answers[idx];
+                if (userAns === undefined) {
+                    emptyCount++;
+                } else if (userAns === qObj.correctIndex) {
+                    correctCount++;
+                } else {
+                    wrongCount++;
+                }
+            });
+
+            const finalScore = correctCount * 2;
+            const isPassed = finalScore >= appSettings.kkm;
+
+            // Susun objek hasil ujian lengkap
+            const resultRecord = {
+                id: 'RES-' + Date.now(),
+                nama: examState.student.nama,
+                nis: examState.student.nis,
+                kelas: examState.student.kelas,
+                nopes: examState.student.nopes,
+                mapel: 'Prakarya Kelas XI SMA',
+                startTimeFormatted: startDate.toLocaleString('id-ID'),
+                endTimeFormatted: endDate.toLocaleString('id-ID'),
+                durationFormatted: durationFormatted,
+                correct: correctCount,
+                wrong: wrongCount,
+                empty: emptyCount,
+                score: finalScore,
+                kkm: appSettings.kkm,
+                statusKKM: isPassed ? 'TUNTAS' : 'BELUM TUNTAS',
+                violations: examState.violations,
+                violationLogs: examState.violationLogs,
+                isLocked: isLockedByViolation,
+                conditionStatus: isLockedByViolation
+                    ? 'DIKUNCI OTOMATIS (Perlu Pemeriksaan Guru)'
+                    : (isTimeUp ? 'Selesai (Waktu Habis)' : 'Selesai Normal')
+            };
+
+            // Simpan hasil ke LocalStorage & hapus sesi aktif
+            saveResultToStorage(resultRecord);
+            localStorage.removeItem(STORAGE_KEYS.ACTIVE_SESSION);
+
+            // Tampilkan Halaman Hasil
+            renderResultView(resultRecord);
+        }
+
+        function saveResultToStorage(record) {
+            try {
+                const existing = JSON.parse(localStorage.getItem(STORAGE_KEYS.RESULTS) || '[]');
+                existing.unshift(record); // Terbaru di atas
+                localStorage.setItem(STORAGE_KEYS.RESULTS, JSON.stringify(existing));
+            } catch (e) {
+                console.error("Gagal menyimpan hasil ujian:", e);
+            }
+        }
+
+        function renderResultView(res) {
+            switchView('view-result');
+            document.getElementById('view-result').classList.add('flex');
+
+            // Banner penguncian jika terkena auto-lock
+            const lockedAlert = document.getElementById('result-locked-alert');
+            if (res.isLocked) {
+                lockedAlert.classList.remove('hidden');
+            } else {
+                lockedAlert.classList.add('hidden');
+            }
+
+            document.getElementById('res-score').textContent = res.score;
+            document.getElementById('res-kkm-val').textContent = res.kkm;
+
+            const badge = document.getElementById('res-status-badge');
+            badge.textContent = res.statusKKM;
+            if (res.statusKKM === 'TUNTAS') {
+                badge.className = "my-2 px-5 py-2 rounded-xl font-extrabold text-lg tracking-wide bg-emerald-100 text-emerald-800 border border-emerald-300";
+            } else {
+                badge.className = "my-2 px-5 py-2 rounded-xl font-extrabold text-lg tracking-wide bg-rose-100 text-rose-800 border border-rose-300";
+            }
+
+            document.getElementById('res-nama').textContent = res.nama;
+            document.getElementById('res-nis').textContent = res.nis;
+            document.getElementById('res-kelas').textContent = res.kelas;
+            document.getElementById('res-nopes').textContent = res.nopes;
+            document.getElementById('res-start').textContent = res.startTimeFormatted;
+            document.getElementById('res-end').textContent = res.endTimeFormatted;
+            document.getElementById('res-duration').textContent = res.durationFormatted;
+            document.getElementById('res-violations').textContent = `${res.violations} Kali`;
+
+            document.getElementById('res-correct').textContent = res.correct;
+            document.getElementById('res-wrong').textContent = res.wrong;
+            document.getElementById('res-empty').textContent = res.empty;
+        }
+
+        function returnToLogin() {
+            document.getElementById('form-login').reset();
+            switchView('view-login');
+        }
+
+        // =====================================================================
+        // DASHBOARD ADMIN / GURU
+        // =====================================================================
+        function openAdminModal() {
+            document.getElementById('admin-pass-input').value = '';
+            document.getElementById('admin-login-error').classList.add('hidden');
+            document.getElementById('modal-admin-login').classList.remove('hidden');
+            setTimeout(() => document.getElementById('admin-pass-input').focus(), 100);
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const inputPass = document.getElementById('admin-pass-input').value;
+            if (inputPass === appSettings.adminPassword) {
+                closeModal('modal-admin-login');
+                openAdminDashboard();
+            } else {
+                document.getElementById('admin-login-error').classList.remove('hidden');
+            }
+        }
+
+        function openAdminDashboard() {
+            switchView('view-admin');
+            document.getElementById('print-date').textContent = new Date().toLocaleString('id-ID');
+
+            // Isi form pengaturan dengan nilai saat ini
+            document.getElementById('set-duration').value = appSettings.durationMinutes;
+            document.getElementById('set-kkm').value = appSettings.kkm;
+            document.getElementById('set-max-violations').value = appSettings.maxViolations;
+            document.getElementById('set-schedule').value = appSettings.scheduleText;
+            document.getElementById('set-password').value = appSettings.adminPassword;
+
+            renderAdminStatsAndTable();
+        }
+
+        function logoutAdmin() {
+            updateLoginInfoUI();
+            switchView('view-login');
+        }
+
+        function saveAdminSettings(e) {
+            e.preventDefault();
+            appSettings.durationMinutes = parseInt(document.getElementById('set-duration').value, 10) || 90;
+            appSettings.kkm = parseInt(document.getElementById('set-kkm').value, 10) || 75;
+            appSettings.maxViolations = parseInt(document.getElementById('set-max-violations').value, 10) || 3;
+            appSettings.scheduleText = document.getElementById('set-schedule').value.trim() || 'Aktif Sekarang';
+            appSettings.adminPassword = document.getElementById('set-password').value.trim() || 'admin123';
+
+            saveSettingsToStorage();
+            updateLoginInfoUI();
+            showToast("Pengaturan ujian berhasil disimpan!");
+        }
+
+        function getStoredResults() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEYS.RESULTS) || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function renderAdminStatsAndTable() {
+            const results = getStoredResults();
+            const total = results.length;
+            const passed = results.filter(r => r.score >= appSettings.kkm).length;
+            const locked = results.filter(r => r.isLocked || r.violations > 0).length;
+            const avg = total > 0
+                ? (results.reduce((acc, cur) => acc + cur.score, 0) / total).toFixed(1)
+                : 0;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-avg').textContent = avg;
+            document.getElementById('stat-passed').textContent = `${passed} / ${total}`;
+            document.getElementById('stat-locked').textContent = locked;
+
+            renderAdminTable();
+        }
+
+        function renderAdminTable() {
+            const results = getStoredResults();
+            const query = (document.getElementById('admin-search').value || '').toLowerCase();
+            const tbody = document.getElementById('admin-table-body');
+            tbody.innerHTML = '';
+
+            const filtered = results.filter(r =>
+                r.nama.toLowerCase().includes(query) ||
+                r.nis.toLowerCase().includes(query) ||
+                r.kelas.toLowerCase().includes(query) ||
+                r.nopes.toLowerCase().includes(query)
+            );
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="py-8 text-center text-slate-400 italic">
+                            Belum ada data peserta ujian yang tersimpan.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            filtered.forEach((r, index) => {
+                const isTuntas = r.score >= appSettings.kkm;
+                const tr = document.createElement('tr');
+                tr.className = r.isLocked ? 'bg-red-50/60 hover:bg-red-50' : 'hover:bg-slate-50';
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-semibold text-slate-600">${index + 1}</td>
+                    <td class="py-3 px-4 font-bold text-navy-900">${r.nama}</td>
+                    <td class="py-3 px-4 text-slate-600">
+                        <div>${r.nis}</div>
+                        <div class="text-[11px] text-slate-400">${r.nopes}</div>
+                    </td>
+                    <td class="py-3 px-4 font-medium">${r.kelas}</td>
+                    <td class="py-3 px-4 text-center font-mono text-xs">
+                        <span class="text-emerald-700 font-bold">${r.correct}</span> /
+                        <span class="text-rose-600 font-bold">${r.wrong}</span> /
+                        <span class="text-slate-500">${r.empty}</span>
+                    </td>
+                    <td class="py-3 px-4 text-center font-extrabold text-base text-navy-950">${r.score}</td>
+                    <td class="py-3 px-4 text-center">
+                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                            isTuntas ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                        }">
+                            ${isTuntas ? 'TUNTAS' : 'BELUM TUNTAS'}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-bold ${
+                            r.violations > 0 ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600'
+                        }">
+                            ${r.violations}x
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        ${
+                            r.isLocked
+                                ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-600 text-white text-[11px] font-bold"><i class="fa-solid fa-lock"></i> Terkunci (Cek Guru)</span>`
+                                : `<span class="text-xs text-slate-600 font-medium">${r.conditionStatus}</span>`
+                        }
+                    </td>
+                    <td class="py-3 px-4 text-center no-print">
+                        <button type="button" onclick="viewViolationLogs('${r.id}')"
+                            class="px-3 py-1.5 rounded-lg bg-navy-100 hover:bg-navy-200 text-navy-900 text-xs font-semibold transition">
+                            Detail Log
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function viewViolationLogs(resId) {
+            const results = getStoredResults();
+            const record = results.find(r => r.id === resId);
+            if (!record) return;
+
+            document.getElementById('log-modal-title').textContent = `Log Pengawasan: ${record.nama} (${record.kelas})`;
+            const content = document.getElementById('log-modal-content');
+
+            if (!record.violationLogs || record.violationLogs.length === 0) {
+                content.innerHTML = `
+                    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-center font-medium">
+                        <i class="fa-solid fa-shield-check text-xl mb-1 block"></i>
+                        Tidak ada pelanggaran tercatat selama ujian berlangsung.
+                    </div>
+                `;
+            } else {
+                content.innerHTML = record.violationLogs.map(log => `
+                    <div class="p-3 rounded-xl bg-red-50 border border-red-200 flex items-start gap-2.5">
+                        <span class="px-2 py-0.5 rounded bg-red-600 text-white font-bold text-[11px]">#${log.count}</span>
+                        <div>
+                            <div class="font-bold text-red-900">${log.reason}</div>
+                            <div class="text-[11px] text-red-700 mt-0.5">Waktu Kejadian: ${log.time}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('modal-log-detail').classList.remove('hidden');
+        }
+
+        function resetDemoData() {
+            localStorage.removeItem(STORAGE_KEYS.RESULTS);
+            renderAdminStatsAndTable();
+            showToast("Seluruh data riwayat peserta telah dihapus.");
+        }
+
+        // =====================================================================
+        // EKSPOR LAPORAN HASIL UJIAN KE CSV
+        // =====================================================================
+        function exportCSV() {
+            const results = getStoredResults();
+            if (results.length === 0) {
+                showToast("Tidak ada data hasil ujian untuk diekspor.");
+                return;
+            }
+
+            const headers = [
+                "No",
+                "Nama Peserta",
+                "NIS/NISN",
+                "Kelas",
+                "Nomor Peserta",
+                "Mata Pelajaran",
+                "Waktu Mulai",
+                "Waktu Selesai",
+                "Durasi Pengerjaan",
+                "Jawaban Benar",
+                "Jawaban Salah",
+                "Tidak Dijawab",
+                "Nilai Akhir",
+                "Status KKM",
+                "Jumlah Pelanggaran",
+                "Kondisi Ujian"
+            ];
+
+            const rows = results.map((r, idx) => [
+                idx + 1,
+                `"${r.nama.replace(/"/g, '""')}"`,
+                `"${r.nis}"`,
+                `"${r.kelas}"`,
+                `"${r.nopes}"`,
+                `"${r.mapel}"`,
+                `"${r.startTimeFormatted}"`,
+                `"${r.endTimeFormatted}"`,
+                `"${r.durationFormatted}"`,
+                r.correct,
+                r.wrong,
+                r.empty,
+                r.score,
+                `"${r.score >= appSettings.kkm ? 'TUNTAS' : 'BELUM TUNTAS'}"`,
+                r.violations,
+                `"${r.conditionStatus}"`
+            ]);
+
+            const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            const dateStamp = new Date().toISOString().slice(0, 10);
+            link.setAttribute("download", `Laporan_Ujian_Prakarya_XI_${dateStamp}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            showToast("File laporan CSV berhasil diunduh!");
+        }
+
+        // =====================================================================
+        // UTILITAS TAMPILAN & MODAL
+        // =====================================================================
+        function switchView(viewId) {
+            ['view-login', 'view-exam', 'view-result', 'view-admin'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            });
+
+            const target = document.getElementById(viewId);
+            target.classList.remove('hidden');
+            if (viewId !== 'view-exam' && viewId !== 'view-admin') {
+                target.classList.add('flex');
+            } else {
+                target.classList.add('flex');
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast-box');
+            document.getElementById('toast-msg').textContent = message;
+            toast.classList.remove('hidden');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
